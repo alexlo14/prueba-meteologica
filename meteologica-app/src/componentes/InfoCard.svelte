@@ -1,14 +1,18 @@
 <script>
-  export let lastValue;
+    // Recibimos como prop el último valor leído
+    export let lastValue;
 </script>
 
 {#if lastValue}
+    <!-- Si ya tenemos un valor, lo mostramos -->
     <div class="info-card">
-        <h2>Última actualización: {lastValue.time}</h2>
+        <h2>Últimos valores recibidos</h2>
+        <p>🕒 Hora: {lastValue.time}</p>
         <p>🌡️ Temperatura: {lastValue.temperature.toFixed(2)} °C</p>
-        <p>⚡ Potencia: {lastValue.power ?? '—'} W</p>
+        <p>⚡ Potencia: {lastValue.power ?? '—'} KW</p>
     </div>
 {:else}
+    <!-- Si aún no hay datos, mostramos un mensaje de carga -->
     <p>Cargando datos meteorológicos...</p>
 {/if}
 
