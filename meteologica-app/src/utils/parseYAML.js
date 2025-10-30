@@ -1,20 +1,29 @@
-// Importamos la librería js-yaml, que nos permite leer y convertir archivos YAML a objetos JavaScript.
+// src/utils/parseYAML.js
 import yaml from 'js-yaml';
 
-import dataUrl from '../data/data.yml?url';
-
 /**
- * Carga y parsea el archivo YAML.
- * Este archivo está ubicado en la carpeta "public" del proyecto.
+ * Carga y parsea el archivo YAML (temperatura y potencia)
  */
 export async function loadForecast() {
-    // Usamos fetch() para obtener el contenido del archivo forecast.yml.
-    // En Vite, todo lo que esté en /public se sirve en la raíz del servidor.
-    const res = await fetch(dataUrl);
-
-    // Convertimos la respuesta a texto plano.
+    const res = await fetch('/data.yml'); // ubicado en /public
     const text = await res.text();
+    const raw = yaml.load(text);
 
-    // Convertimos el texto YAML en un objeto JavaScript usando js-yaml.
-    return yaml.load(text);
+    // Extraemos los arrays de temperatura y potencia
+    // @ts-ignore
+    const tempValues = raw?.temperature?.values || [];
+    // @ts-ignore
+    const powerValues = raw?.power?.values || [];
+
+    // Combinamos ambos arrays según el campo "time"
+    const combined = tempValues.map(t => {
+        const powerMatch = powerValues.find(p => p.time === t.time);
+        return {
+            time: t.time,
+            temperature: (Number(t.value) / 10) - 273.15, // deciKelvin → Celsius
+            power: powerMatch ? Number(powerMatch.value) : null
+        };
+    });
+
+    return combined;
 }
