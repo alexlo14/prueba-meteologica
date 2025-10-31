@@ -67,10 +67,3 @@
 </script>
 
 <canvas bind:this={canvas}></canvas>
-
-<style>
-    canvas {
-        width: 100%;
-        max-height: 400px;
-    }
-</style>
