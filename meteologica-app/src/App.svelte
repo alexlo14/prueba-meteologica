@@ -10,8 +10,9 @@
   let intervalId;         // ID del intervalo para limpiar al desmontar
   let clockInterval;      // Intervalo para el reloj
   let currentTime = '';   // Hora actual en formato "HH:mm:ss"
+  let selectedVariable = 'ambas'; // Variable seleccionada para mostrar en la gráfica
 
-  // Función auxiliar: convierte "HH:mm:ss" → formato estándar con ceros a la izquierda
+  // Función auxiliar: convierte "HH:mm:ss" - formato estándar con ceros a la izquierda
   const pad = (n) => String(n).padStart(2, '0');
 
   // Devuelve la hora actual en formato "HH:mm:ss" (24h)
@@ -76,7 +77,18 @@
 <main>
   <!-- <h1>⛅ Datos meteorológicos en tiempo real ⛅</h1> -->
   <InfoCard {lastValue} />
-  <Chart {visibleData} />
+
+  <!-- Filtro select para mostrar temperatura y/o potencia -->
+  <div class="selector">
+    <label for="variable">Mostrar:</label>
+    <select id="variable" bind:value={selectedVariable}>
+      <option value="ambas">Ambas</option>
+      <option value="temperatura">Temperatura</option>
+      <option value="potencia">Potencia</option>
+    </select>
+  </div>
+
+  <Chart {visibleData} {selectedVariable} />
 </main>
 
 <!-- FOOTER -->

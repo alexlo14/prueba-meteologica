@@ -1,12 +1,14 @@
 <script>
     // Importamos funciones de Svelte y Chart.js
-    import { onMount, afterUpdate } from 'svelte';
+    import { onMount, afterUpdate, onDestroy } from 'svelte';
     import Chart from 'chart.js/auto';
 
     // Recibimos como prop el array de datos visibles
     export let visibleData = [];
+    export let selectedVariable = 'ambas';
     let canvas;
     let chart;
+    let resizeObserver
 
     // Se ejecuta una sola vez cuando el componente se monta
     onMount(() => {
@@ -35,6 +37,7 @@
             },
             options: {
                 responsive: true, // para que se adapte al tamaño de pantalla
+                maintainAspectRatio: false,
                 scales: {
                 x: { title: { display: true, text: 'Hora (hh:mm:ss)' } },
                 y: { title: { display: true, text: 'Temperatura (°C)' } },
@@ -46,6 +49,9 @@
                 }
             }
         });
+
+        resizeObserver = new ResizeObserver(() => chart?.resize());
+        resizeObserver.observe(canvas);
     });
 
     // Se ejecuta cada vez que visibleData cambia
@@ -61,8 +67,17 @@
         chart.data.datasets[0].data.push(latest.temperature);
         chart.data.datasets[1].data.push(latest.power);
 
+        // Mostrar u ocultar datasets según la selección
+        chart.getDatasetMeta(0).hidden = selectedVariable === 'potencia';
+        chart.getDatasetMeta(1).hidden = selectedVariable === 'temperatura';
+
         // Actualizamos el gráfico
         chart.update();
+    });
+
+    onDestroy(() => {
+        resizeObserver?.disconnect();
+        chart?.destroy();
     });
 </script>
 
