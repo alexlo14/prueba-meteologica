@@ -18,7 +18,7 @@
   // Devuelve la hora actual en formato "HH:mm:ss" (24h)
   const getNowHHMMSS = () => {
     const now = new Date();
-    const h = String(now.getUTCHours() + 1).padStart(2, '0');
+    const h = String(now.getUTCHours()).padStart(2, '0');
     const m = String(now.getUTCMinutes()).padStart(2, '0');
     const s = String(now.getUTCSeconds()).padStart(2, '0');
     return `${h}:${m}:${s}`;
