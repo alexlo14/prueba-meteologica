@@ -18,7 +18,7 @@
   // Devuelve la hora actual en formato "HH:mm:ss" (24h)
   const getNowHHMMSS = () => {
     const now = new Date();
-    const h = String(now.getUTCHours()).padStart(2, '0');
+    const h = String(now.getUTCHours() + 1).padStart(2, '0');
     const m = String(now.getUTCMinutes()).padStart(2, '0');
     const s = String(now.getUTCSeconds()).padStart(2, '0');
     return `${h}:${m}:${s}`;
@@ -31,20 +31,20 @@
       currentTime = getNowHHMMSS();
     }, 1000);
 
-    // 1️⃣ Cargar todos los datos del YAML
+    // Cargar todos los datos del YAML
     data = await loadForecast();
 
     if (!data || data.length === 0) return;
 
-    // 2️⃣ Crear un conjunto con todas las horas del YAML para búsqueda rápida
+    // Crear un conjunto con todas las horas del YAML para búsqueda rápida
     const yamlTimes = new Set(data.map(d => d.time));
 
-    // 3️⃣ Ejecutar una comprobación cada segundo
+    // Ejecutar una comprobación cada segundo
     intervalId = setInterval(() => {
       const now = getNowHHMMSS(); // Hora actual real
       //console.log('Hora actual:', now);
 
-      // 4️⃣ Si hay coincidencia exacta con algún time del YAML...
+      // Si hay coincidencia exacta con algún time del YAML...
       if (yamlTimes.has(now)) {
         // Buscar el registro correspondiente
         const record = data.find(d => d.time === now);
